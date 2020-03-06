@@ -1,11 +1,9 @@
 #!/bin/bash
-
-echo 1 >> 1.txt
+echo "1" >> 1.txt
 git add .
 
-for number in $(seq 1400 1700 | shuf | tail -n 1);do
-	git commit --date "$number day ago" -m "bugfix" .
-       
-done      
+for num in $(seq 1200 1500 | shuf | tail -n1);do
+	git commit --date="$num day ago" -m "bugfix"
+done
 
-echo "--------------commit done on $number day's ago!-----------------"
+echo "---------commit done in $num day's ago!------------"
