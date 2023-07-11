@@ -1,0 +1,45 @@
+---
+- hosts: hetzner-cloud
+  become: yes
+  tasks:
+
+  - name: install apache package for Ubuntu
+    become: true
+    tags: apache,web_server
+    apt:
+      name:
+        - apache2
+        - libapache2-mod-php
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+
+  - name: install apache package for CentOS
+    become: true
+    tags: apache,web_server,httpd
+    yum:
+      name:
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+  - name: httpd service enabled
+    ansible.builtin.service:
+      name: httpd
+      enabled: true
+      state: started
+    when: ansible_distribution == "CentOS"
+
+  - name: copy files to server
+    run_once: true
+    become: true
+    tags: copy,file
+    ansible.builtin.copy:
+      src: /root/hetzner-autoprovision/play-book/files/
+      dest: /var/www/html/
+      force: true
+      owner: root
+      group: root
+      mode: '0644'
+
